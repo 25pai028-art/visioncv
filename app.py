@@ -63,7 +63,7 @@ gesture = "No Hand"
 
 try:
     with open("gesture.txt", "r") as file:
-        gesture = file.read()
+        gesture = file.read().strip()
 
 except:
     pass
@@ -111,6 +111,18 @@ with col2:
 
 # ---------------- AUTO REFRESH ----------------
 
-time.sleep(0.5)
+# Use Streamlit's built-in polling instead of rerun loop
+placeholder = st.empty()
+placeholder.text("Listening for gestures...")
 
-st.rerun()
+# Configure auto-refresh using session state
+if 'last_gesture' not in st.session_state:
+    st.session_state.last_gesture = gesture
+
+if st.session_state.last_gesture != gesture:
+    st.session_state.last_gesture = gesture
+    st.rerun()
+
+# Add a refresh button as alternative
+if st.button("🔄 Refresh"):
+    st.rerun()
